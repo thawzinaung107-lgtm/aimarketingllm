@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Marketing LMS
+
+A production-ready Learning Management System built with Next.js, TypeScript, Tailwind CSS, and Supabase.
+
+## Tech Stack
+
+- **Frontend**: Next.js 16, TypeScript, Tailwind CSS 4, shadcn/ui
+- **Backend**: Next.js API Routes, Server Actions
+- **Database**: Supabase PostgreSQL
+- **Authentication**: Google OAuth via Supabase Auth
+- **Deployment**: Docker
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+
+- npm or yarn
+- Supabase account
+
+### Environment Setup
+
+1. Copy the environment template:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Configure your Supabase project:
+   - Create a project at https://app.supabase.com
+   - Get your project URL and anon key from Settings > API
+   - Update `.env.local` with your credentials
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Configure Google OAuth:
+   - Go to Supabase Dashboard > Authentication > Providers
+   - Enable Google provider
+   - Follow the setup instructions for Google Cloud Console
+   - Add authorized redirect URL: `https://your-project.supabase.co/auth/v1/callback`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Development
 
-## Learn More
+```bash
+# Install dependencies
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# Run database migrations
+npm run db:migrate
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Start development server
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Deploy on Vercel
+### Build
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run build
+npm start
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+```
+ai-marketing-lms/
+├── app/                    # Next.js App Router
+│   ├── (auth)/            # Authentication routes
+│   ├── (student)/         # Student-facing pages
+│   ├── (admin)/           # Admin dashboard
+│   └── api/               # API routes
+├── components/            # React components
+│   └── ui/               # shadcn/ui components
+├── lib/                   # Utilities and configurations
+│   ├── supabase/         # Supabase clients
+│   └── utils.ts          # Helper functions
+├── hooks/                 # Custom React hooks
+├── supabase/             # Database migrations and types
+└── public/               # Static assets
+```
+
+## Features
+
+### Student Features
+- Browse courses and view details
+- Enroll via payment or redeem code
+- Watch video lessons with progress tracking
+- Resume watching from last position
+- Track learning progress
+- Device management (max 2 devices)
+- Time-limited course access
+
+### Admin Features
+- Dashboard with analytics
+- Course and lesson management
+- Manual payment approval
+- Redeem code generation and management
+- Student and enrollment management
+- Device management
+- Homepage banner management
+- Audit logs
+
+## Security
+
+- Server-side role-based authorization
+- Row Level Security (RLS) policies
+- Google OAuth only (no password authentication)
+- Device limit enforcement
+- Secure payment approval workflow
+
+## Documentation
+
+- [Implementation Plan](IMPLEMENTATION_PLAN.md)
+- [Database Schema](supabase/README.md)
+
+## License
+
+Private - All Rights Reserved
