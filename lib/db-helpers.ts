@@ -1,7 +1,4 @@
 import { createClient } from '@/lib/supabase/server'
-import type { Database } from '@/lib/database.types'
-
-type Tables = Database['public']['Tables']
 
 /**
  * Get active enrollments for a user
