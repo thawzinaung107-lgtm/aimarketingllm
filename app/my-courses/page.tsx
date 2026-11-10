@@ -1,6 +1,5 @@
-import { getCurrentUser, requireAuth } from '@/lib/auth'
+import { requireAuth } from '@/lib/auth'
 import { getUserEnrollments } from '@/lib/db-helpers'
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -66,7 +65,7 @@ export default async function MyCoursesPage() {
         {enrollments.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 mb-6">
-              You haven't enrolled in any courses yet.
+              You haven&apos;t enrolled in any courses yet.
             </p>
             <Link
               href="/"

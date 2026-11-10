@@ -1,4 +1,4 @@
-import { getCurrentUser, requireAuth } from '@/lib/auth'
+import { requireAuth } from '@/lib/auth'
 import { LogoutButton } from '@/components/auth-buttons'
 import { getUserDevices } from '@/lib/db-helpers'
 import Link from 'next/link'
