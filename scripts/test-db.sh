@@ -16,5 +16,9 @@ for f in "$DIR"/*.sql; do
     echo "PASS $(basename "$f") ($n_ok assertions)"
   fi
 done
-echo "TOTAL: $total assertions, $failed failed"
+if [ "$total" -eq 0 ]; then
+  echo "BLOCKED: no database assertions executed (not a passing result)."
+  fail=1
+fi
+echo "TOTAL: $total assertions, $failed failed; runner failure=$fail"
 exit $fail

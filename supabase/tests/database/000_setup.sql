@@ -40,7 +40,7 @@ returns void language plpgsql as $$
 begin
   perform set_config('request.jwt.claims', json_build_object(
     'sub', p_user, 'role', 'authenticated',
-    'session_id', coalesce(p_session::text, gen_random_uuid()::text))::text, true);
+    'session_id', coalesce(p_session::text, tests.create_session(p_user)::text))::text, true);
   execute 'set local role authenticated';
 end $$;
 
