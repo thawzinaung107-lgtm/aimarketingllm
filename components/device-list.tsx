@@ -29,16 +29,16 @@ export function DeviceList({ devices }: { devices: Device[] }) {
     startTransition(() => router.refresh())
   }
 
-  if (devices.length === 0) return <p className="text-sm text-gray-500">No devices registered yet.</p>
+  if (devices.length === 0) return <p className="text-sm text-muted">No devices registered yet.</p>
 
   return (
     <div className="space-y-3">
       {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
       {devices.map((d) => (
-        <div key={d.id} className="flex items-center justify-between rounded-lg border border-gray-200 p-3">
+        <div key={d.id} className="flex items-center justify-between rounded-lg border border-[#e6e8eb] px-[15px] py-[13px]">
           <div>
-            <p className="font-medium text-gray-900">{d.device_name || 'Unknown device'}</p>
-            <p className="text-sm text-gray-600">Last used {new Date(d.last_used_at).toLocaleString('en')}</p>
+            <p className="font-medium">{d.device_name || 'Unknown device'}</p>
+            <p className="text-sm text-muted">Last used {new Date(d.last_used_at).toLocaleString('en')}</p>
           </div>
           <button
             type="button"

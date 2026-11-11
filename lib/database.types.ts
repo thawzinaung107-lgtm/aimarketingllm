@@ -65,14 +65,14 @@ isOneToOne: false
                   ]
                 },"courses": {
                   Row: {
-                    "access_duration_days": number | null,"created_at": string,"currency": string | null,"description": string | null,"display_order": number,"id": string,"is_published": boolean,"price": number | null,"slug": string,"thumbnail_url": string | null,"title": string,"updated_at": string
+                    "access_duration_days": number | null,"category": string | null,"created_at": string,"currency": string | null,"description": string | null,"display_order": number,"id": string,"is_published": boolean,"price": number | null,"slug": string,"thumbnail_url": string | null,"title": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "access_duration_days"?: number | null,"created_at"?: string,"currency"?: string | null,"description"?: string | null,"display_order"?: number,"id"?: string,"is_published"?: boolean,"price"?: number | null,"slug": string,"thumbnail_url"?: string | null,"title": string,"updated_at"?: string
+                    "access_duration_days"?: number | null,"category"?: string | null,"created_at"?: string,"currency"?: string | null,"description"?: string | null,"display_order"?: number,"id"?: string,"is_published"?: boolean,"price"?: number | null,"slug": string,"thumbnail_url"?: string | null,"title": string,"updated_at"?: string
                   }
                   Update: {
-                    "access_duration_days"?: number | null,"created_at"?: string,"currency"?: string | null,"description"?: string | null,"display_order"?: number,"id"?: string,"is_published"?: boolean,"price"?: number | null,"slug"?: string,"thumbnail_url"?: string | null,"title"?: string,"updated_at"?: string
+                    "access_duration_days"?: number | null,"category"?: string | null,"created_at"?: string,"currency"?: string | null,"description"?: string | null,"display_order"?: number,"id"?: string,"is_published"?: boolean,"price"?: number | null,"slug"?: string,"thumbnail_url"?: string | null,"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     
@@ -131,14 +131,14 @@ isOneToOne: false
                   ]
                 },"homepage_banners": {
                   Row: {
-                    "created_at": string,"description": string | null,"display_order": number,"id": string,"image_url": string,"is_active": boolean,"link_url": string | null,"title": string,"updated_at": string
+                    "created_at": string,"description": string | null,"display_order": number,"eyebrow": string | null,"id": string,"image_url": string,"is_active": boolean,"link_url": string | null,"title": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"description"?: string | null,"display_order"?: number,"id"?: string,"image_url": string,"is_active"?: boolean,"link_url"?: string | null,"title": string,"updated_at"?: string
+                    "created_at"?: string,"description"?: string | null,"display_order"?: number,"eyebrow"?: string | null,"id"?: string,"image_url": string,"is_active"?: boolean,"link_url"?: string | null,"title": string,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"description"?: string | null,"display_order"?: number,"id"?: string,"image_url"?: string,"is_active"?: boolean,"link_url"?: string | null,"title"?: string,"updated_at"?: string
+                    "created_at"?: string,"description"?: string | null,"display_order"?: number,"eyebrow"?: string | null,"id"?: string,"image_url"?: string,"is_active"?: boolean,"link_url"?: string | null,"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     

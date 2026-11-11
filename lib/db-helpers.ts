@@ -11,7 +11,7 @@ export async function getPublishedCourses() {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('courses')
-    .select('id, title, slug, description, thumbnail_url, price, currency, display_order')
+    .select('id, title, slug, description, thumbnail_url, price, currency, category')
     .eq('is_published', true)
     .order('display_order', { ascending: true })
   if (error) throw error
@@ -22,7 +22,7 @@ export async function getActiveHomepageBanners() {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('homepage_banners')
-    .select('id, title, description, image_url, link_url')
+    .select('id, eyebrow, title, description, image_url, link_url')
     .eq('is_active', true)
     .order('display_order', { ascending: true })
     .limit(3)

@@ -25,11 +25,11 @@ export function GoogleSignInButton({ next }: { next: string }) {
       <button
         onClick={handleLogin}
         disabled={isLoading}
-        className="inline-flex w-full items-center justify-center rounded-lg bg-gray-900 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+        className="btn w-full"
       >
-        {isLoading ? 'Redirecting to Google…' : 'Continue with Google'}
+        {isLoading ? 'Redirecting to Google…' : 'Continue with Google →'}
       </button>
-      {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
+      {error && <p role="alert" className="text-xs text-red-800">{error}</p>}
     </div>
   )
 }

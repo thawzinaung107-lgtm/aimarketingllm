@@ -9,13 +9,13 @@ import { requireAdminPage } from '@/lib/auth'
 export default async function AdminPage() {
   const user = await requireAdminPage()
   return (
-    <div className="min-h-screen bg-white">
+    <>
       <SiteHeader user={user} />
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900">Admin</h1>
-        <p className="mt-2 text-gray-600">Admin tools are not implemented yet.</p>
+      <main className="wrap min-h-[70vh] pt-[35px] pb-[72px]">
+        <h1 className="text-[clamp(31px,4vw,49px)] leading-[1.13] font-bold tracking-[-1.8px]">Admin</h1>
+        <p className="mt-2 text-muted">Admin tools are not implemented yet.</p>
       </main>
       <SiteFooter />
-    </div>
+    </>
   )
 }

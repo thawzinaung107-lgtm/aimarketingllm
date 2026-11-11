@@ -8,8 +8,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AI Marketing LMS",
-  description: "Professional Learning Management System",
+  title: "AI Marketing Academy",
+  description: "Practical online courses in AI marketing.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -18,7 +18,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-white text-gray-900">{children}</body>
+      <body className="flex min-h-full flex-col bg-white font-sans text-ink">{children}</body>
     </html>
   );
 }

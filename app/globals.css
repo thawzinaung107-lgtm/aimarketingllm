@@ -1,12 +1,112 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #1a1a1a;
+/* Design tokens from "Option 2 V3" (AI_Marketing_LMS_Option2_V3_English_Standalone_Preview.html) */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --color-black: #111214;
+  --color-charcoal: #1d1f22;
+  --color-hero: #17191c;
+  --color-ink: #18191b;
+  --color-muted: #686d74;
+  --color-line: #e4e6e9;
+  --color-line-strong: #d4d6d9;
+  --color-soft: #f5f6f7;
+  --color-soft-2: #f3f4f5;
+  --color-focus: #6a8bc5;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  background: #fff;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Shared component classes (Option 2 V3: .btn, .btn.alt, .btn.light, .icon-btn, .eyebrow) */
+@layer components {
+  .btn {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid var(--color-black);
+    border-radius: 9px;
+    background: var(--color-black);
+    padding: 11px 18px;
+    font-size: 13px;
+    font-weight: 650;
+    color: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:hover {
+    filter: brightness(0.88);
+  }
+  .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    filter: none;
+  }
+  .btn-alt {
+    border-color: #d4d6d9;
+    background: #fff;
+    color: var(--color-ink);
+  }
+  .btn-light {
+    border-color: #fff;
+    background: #fff;
+    color: #111;
+  }
+  .icon-btn {
+    display: inline-grid;
+    height: 37px;
+    width: 37px;
+    place-items: center;
+    border: 1px solid #d8dadd;
+    border-radius: 9px;
+    background: #fff;
+    font-size: 19px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .wrap {
+    margin-inline: auto;
+    max-width: 1240px;
+    padding-inline: 30px;
+  }
+  @media (max-width: 800px) {
+    .wrap {
+      padding-inline: 18px;
+    }
+  }
 }

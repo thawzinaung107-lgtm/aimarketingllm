@@ -34,7 +34,7 @@ describe('session handling and route protection', () => {
     const second = await http('/my-courses', { cookie: s.cookieHeader })
     expect(first.status).toBe(200)
     expect(second.status).toBe(200)
-    expect(await second.text()).toContain('My Courses')
+    expect(await second.text()).toContain('My learning')
   })
 
   it('students are redirected away from /admin; admins can open it', async () => {

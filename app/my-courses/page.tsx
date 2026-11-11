@@ -10,29 +10,31 @@ export default async function MyCoursesPage() {
   const enrollments = await getMyEnrollments(user.id)
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
       <SiteHeader user={user} />
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <h1 className="mb-8 text-3xl font-bold text-gray-900">My Courses</h1>
+      <main className="wrap min-h-[70vh] pt-[35px] pb-[72px]">
+        <span className="eyebrow">Student area</span>
+        <h1 className="mt-2 text-[clamp(31px,4vw,49px)] leading-[1.13] font-bold tracking-[-1.8px]">My learning</h1>
+        <p className="mb-8 text-muted">Pick up where you left off and view your enrolled courses.</p>
 
         {enrollments.length === 0 ? (
           <div className="py-12 text-center">
-            <p className="mb-6 text-gray-600">You don&apos;t have any courses yet.</p>
-            <Link href="/" className="rounded-lg bg-gray-900 px-6 py-3 font-medium text-white hover:bg-gray-800">
+            <p className="mb-6 text-muted">You don&apos;t have any courses yet.</p>
+            <Link href="/" className="btn">
               Browse courses
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 min-[801px]:grid-cols-2">
             {enrollments.map((enrollment) => {
               const course = enrollment.courses
               if (!course) return null
               const expired = enrollment.status !== 'active' || isExpired(enrollment.expires_at)
               return (
-                <article key={enrollment.id} className="overflow-hidden rounded-lg border border-gray-200">
-                  <div className="relative aspect-video bg-gray-100">
+                <article key={enrollment.id} className="overflow-hidden rounded-[15px] border border-line">
+                  <div className="relative aspect-video bg-[#e9ebed]">
                     {course.thumbnail_url && (
-                      <Image src={course.thumbnail_url} alt="" fill className="object-cover" />
+                      <Image src={course.thumbnail_url} alt="" fill sizes="(max-width: 800px) 100vw, 400px" className="object-cover saturate-[.72]" />
                     )}
                     {expired && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black/60">
@@ -41,9 +43,9 @@ export default async function MyCoursesPage() {
                     )}
                   </div>
                   <div className="p-5">
-                    <h2 className="mb-2 text-lg font-semibold text-gray-900">{course.title}</h2>
+                    <h2 className="mb-2 text-lg font-semibold">{course.title}</h2>
                     {enrollment.expires_at && (
-                      <p className={`text-sm ${expired ? 'text-red-700' : 'text-gray-600'}`}>
+                      <p className={`text-sm ${expired ? 'text-red-700' : 'text-muted'}`}>
                         {expired ? 'Expired' : 'Access until'}{' '}
                         {new Date(enrollment.expires_at).toLocaleDateString('en', { dateStyle: 'medium' })}
                       </p>
@@ -56,6 +58,6 @@ export default async function MyCoursesPage() {
         )}
       </main>
       <SiteFooter />
-    </div>
+    </>
   )
 }

@@ -8,8 +8,10 @@ import { getServerEnv } from '@/lib/env.server'
 
 /** Per-request client acting as the signed-in user (RLS applies). */
 export async function createClient() {
-  const env = getPublicEnv()
+  // Read request cookies first: this marks the caller as request-time
+  // rendering, so `next build` never needs Supabase configuration.
   const cookieStore = await cookies()
+  const env = getPublicEnv()
 
   return createServerClient<Database>(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, {
     cookies: {

@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { GoogleSignInButton } from '@/components/auth-buttons'
+import { SiteFooter, SiteHeader } from '@/components/site-chrome'
 import { getCurrentUser } from '@/lib/auth'
 import { safeNextPath } from '@/lib/routes'
 
@@ -18,15 +19,26 @@ export default async function LoginPage(props: PageProps<'/login'>) {
   if (await getCurrentUser()) redirect(next)
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-4">
-      <h1 className="mb-2 text-2xl font-bold text-gray-900">Sign in</h1>
-      <p className="mb-6 text-gray-600">Use your Google account to access your courses.</p>
-      {errorKey && ERRORS[errorKey] && (
-        <p role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
-          {ERRORS[errorKey]}
-        </p>
-      )}
-      <GoogleSignInButton next={next} />
-    </main>
+    <>
+      <SiteHeader user={null} />
+      <main className="wrap min-h-[70vh]">
+        <div className="mx-auto my-[45px] max-w-[490px]">
+          <span className="eyebrow">Welcome back</span>
+          <h1 className="mt-2 text-[clamp(31px,4vw,49px)] leading-[1.13] font-bold tracking-[-1.8px]">Sign in to continue</h1>
+          {errorKey && ERRORS[errorKey] && (
+            <p role="alert" className="my-4 rounded-[9px] border border-[#e5e7e9] bg-[#f2f3f4] px-[15px] py-[13px] text-xs text-[#4d5258]">
+              {ERRORS[errorKey]}
+            </p>
+          )}
+          <div className="rounded-[15px] border border-line bg-white p-7">
+            <h2 className="text-lg font-bold tracking-[-.4px]">Sign in with Google</h2>
+            <p className="text-muted">Use your Google account to access your courses and learning progress.</p>
+            <GoogleSignInButton next={next} />
+            <p className="mt-[18px] mb-0 text-xs text-muted">No password sign-in is available for this academy.</p>
+          </div>
+        </div>
+      </main>
+      <SiteFooter />
+    </>
   )
 }
