@@ -1,126 +1,80 @@
-import { createClient } from '@/lib/supabase/server'
+import 'server-only'
 import { cache } from 'react'
-import type { UserRole } from '@/lib/database.types'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import type { Database } from '@/lib/database.types'
 
-export interface User {
+export type UserRole = Database['public']['Enums']['user_role']
+
+export interface CurrentUser {
   id: string
-  email: string
-  full_name: string | null
+  email: string | null
+  fullName: string | null
   role: UserRole
+  sessionId: string | null
 }
 
 /**
- * Get the current authenticated user from the session
- * Cached per request
+ * The signed-in user, verified server-side. The JWT is validated by
+ * getClaims(); the role is read from the database (never from the token or
+ * user metadata, which the user can influence).
  */
-export const getCurrentUser = cache(async (): Promise<User | null> => {
+export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   const supabase = await createClient()
+  const { data, error } = await supabase.auth.getClaims()
+  const claims = data?.claims
+  if (error || !claims?.sub) return null
 
-  const {
-    data: { user: authUser },
-  } = await supabase.auth.getUser()
+  // Reject revoked sessions immediately (the JWT alone stays valid until expiry).
+  const { data: active } = await supabase.rpc('current_session_is_active')
+  if (active !== true) return null
 
-  if (!authUser) {
-    return null
-  }
-
-  // Get user profile with role
   const { data: profile } = await supabase
     .from('profiles')
     .select('id, email, full_name, role')
-    .eq('id', authUser.id)
-    .single()
+    .eq('id', claims.sub)
+    .maybeSingle()
 
-  if (!profile) {
-    return null
+  if (!profile) return null
+
+  return {
+    id: profile.id,
+    email: profile.email,
+    fullName: profile.full_name,
+    role: profile.role,
+    sessionId: typeof claims.session_id === 'string' ? claims.session_id : null,
   }
-
-  return profile
 })
 
-/**
- * Check if the current user is an admin
- */
-export async function isAdmin(): Promise<boolean> {
+/** For pages: redirect to /login if signed out. */
+export async function requireUser(nextPath?: string): Promise<CurrentUser> {
   const user = await getCurrentUser()
-  return user?.role === 'admin'
-}
-
-/**
- * Check if the current user is a student
- */
-export async function isStudent(): Promise<boolean> {
-  const user = await getCurrentUser()
-  return user?.role === 'student'
-}
-
-/**
- * Require authentication - throws if not authenticated
- */
-export async function requireAuth(): Promise<User> {
-  const user = await getCurrentUser()
-
-  if (!user) {
-    throw new Error('Unauthorized')
-  }
-
+  if (!user) redirect(nextPath ? `/login?next=${encodeURIComponent(nextPath)}` : '/login')
   return user
 }
 
-/**
- * Require admin role - throws if not admin
- */
-export async function requireAdmin(): Promise<User> {
-  const user = await requireAuth()
-
-  if (user.role !== 'admin') {
-    throw new Error('Forbidden: Admin access required')
-  }
-
+/** For admin pages: redirect signed-out users to login, non-admins home. */
+export async function requireAdminPage(): Promise<CurrentUser> {
+  const user = await requireUser('/admin')
+  if (user.role !== 'admin') redirect('/')
   return user
 }
 
-/**
- * Require student role - throws if not student
- */
-export async function requireStudent(): Promise<User> {
-  const user = await requireAuth()
-
-  if (user.role !== 'student') {
-    throw new Error('Forbidden: Student access required')
+export class AuthError extends Error {
+  constructor(public readonly status: 401 | 403, message: string) {
+    super(message)
   }
-
-  return user
 }
 
-/**
- * Check if user has access to a specific course (enrolled and not expired)
- */
-export async function hasActiveCourseAccess(courseId: string): Promise<boolean> {
+/** For route handlers / server actions: throws AuthError instead of redirecting. */
+export async function assertUser(): Promise<CurrentUser> {
   const user = await getCurrentUser()
+  if (!user) throw new AuthError(401, 'Authentication required')
+  return user
+}
 
-  if (!user) {
-    return false
-  }
-
-  const supabase = await createClient()
-
-  const { data: enrollment } = await supabase
-    .from('enrollments')
-    .select('status, expires_at')
-    .eq('user_id', user.id)
-    .eq('course_id', courseId)
-    .eq('status', 'active')
-    .single()
-
-  if (!enrollment) {
-    return false
-  }
-
-  // Check if enrollment is expired
-  if (enrollment.expires_at && new Date(enrollment.expires_at) < new Date()) {
-    return false
-  }
-
-  return true
+export async function assertAdmin(): Promise<CurrentUser> {
+  const user = await assertUser()
+  if (user.role !== 'admin') throw new AuthError(403, 'Admin access required')
+  return user
 }

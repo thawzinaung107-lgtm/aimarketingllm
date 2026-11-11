@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { formatPrice } from '@/lib/format'
 
 interface Course {
   id: string
@@ -8,6 +9,7 @@ interface Course {
   description: string | null
   thumbnail_url: string | null
   price: number | null
+  currency: string | null
 }
 
 interface CourseCardProps {
@@ -55,16 +57,14 @@ export function CourseCard({ course }: CourseCardProps) {
             {course.description}
           </p>
         )}
-        {course.price !== null && (
-          <div className="flex items-center justify-between">
-            <span className="text-xl font-bold text-gray-900">
-              ${course.price.toFixed(2)}
-            </span>
-            <span className="text-sm font-medium text-gray-900 group-hover:text-gray-700">
-              View Course →
-            </span>
-          </div>
-        )}
+        <div className="flex items-center justify-between">
+          <span className="text-base font-semibold text-gray-900">
+            {formatPrice(course.price, course.currency) ?? 'Price to be announced'}
+          </span>
+          <span className="text-sm font-medium text-gray-900 group-hover:text-gray-700">
+            View course →
+          </span>
+        </div>
       </div>
     </Link>
   )

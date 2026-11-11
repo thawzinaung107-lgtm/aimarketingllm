@@ -1,60 +1,35 @@
 'use client'
 
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
 
-export function LoginButton() {
+/** Starts Google OAuth (PKCE). The only sign-in method offered. */
+export function GoogleSignInButton({ next }: { next: string }) {
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleLogin = async () => {
     setIsLoading(true)
+    setError(null)
     const supabase = createClient()
-
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
-
+    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
+    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } })
     if (error) {
-      console.error('Login error:', error)
+      setError('Could not start Google sign-in. Please try again.')
       setIsLoading(false)
     }
   }
 
   return (
-    <button
-      onClick={handleLogin}
-      disabled={isLoading}
-      className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      {isLoading ? 'Signing in...' : 'Sign in with Google'}
-    </button>
-  )
-}
-
-export function LogoutButton() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-
-  const handleLogout = async () => {
-    setIsLoading(true)
-    const supabase = createClient()
-
-    await supabase.auth.signOut()
-    router.push('/')
-    router.refresh()
-  }
-
-  return (
-    <button
-      onClick={handleLogout}
-      disabled={isLoading}
-      className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      {isLoading ? 'Signing out...' : 'Sign out'}
-    </button>
+    <div className="space-y-3">
+      <button
+        onClick={handleLogin}
+        disabled={isLoading}
+        className="inline-flex w-full items-center justify-center rounded-lg bg-gray-900 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {isLoading ? 'Redirecting to Google…' : 'Continue with Google'}
+      </button>
+      {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
+    </div>
   )
 }

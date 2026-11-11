@@ -1,42 +1,28 @@
+import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { safeNextPath } from '@/lib/routes'
 
-export async function GET(request: Request) {
-  const requestUrl = new URL(request.url)
-  const code = requestUrl.searchParams.get('code')
-  const origin = requestUrl.origin
+/**
+ * Google OAuth (PKCE) callback. Exchanges the code for a session cookie.
+ * Profiles are created by the database trigger on auth.users (always with the
+ * 'student' role), so this route never writes to profiles.
+ */
+export async function GET(request: NextRequest) {
+  const { searchParams, origin } = request.nextUrl
+  const code = searchParams.get('code')
+  const next = safeNextPath(searchParams.get('next'))
+  const providerError = searchParams.get('error')
 
-  if (code) {
-    const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-
-    if (!error) {
-      // Get user and create profile if doesn't exist
-      const { data: { user } } = await supabase.auth.getUser()
-
-      if (user) {
-        // Check if profile exists
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('id', user.id)
-          .single()
-
-        // Create profile if doesn't exist
-        if (!profile) {
-          await supabase
-            .from('profiles')
-            .insert({
-              id: user.id,
-              email: user.email!,
-              full_name: user.user_metadata.full_name || null,
-              role: 'student', // Default role
-            })
-        }
-      }
-    }
+  if (providerError || !code) {
+    return NextResponse.redirect(`${origin}/login?error=${providerError ? 'provider' : 'missing_code'}`)
   }
 
-  // Redirect to home page
-  return NextResponse.redirect(`${origin}/`)
+  const supabase = await createClient()
+  const { error } = await supabase.auth.exchangeCodeForSession(code)
+  if (error) {
+    return NextResponse.redirect(`${origin}/login?error=exchange_failed`)
+  }
+
+  // Register (or recognise) this device before allowing access to content.
+  return NextResponse.redirect(`${origin}/auth/device?next=${encodeURIComponent(next)}`)
 }
