@@ -1,3 +1,60 @@
+# Current verification addendum — 2026-11-11
+
+**This section supersedes the historical audit below for the current working tree. No production database was inspected or modified. The historical passing counts must not be treated as results from this implementation session.**
+
+## Actual verification status
+- Baseline: typecheck/lint pass, 20 unit tests pass.
+- Current automated unit suite: 66 tests pass, including mocked payment/streaming/admin authorization boundaries. These are not live Storage or database tests.
+- Database/pgTAP/concurrency and HTTP integration: blocked by denied Docker socket access. **Zero database assertions executed in this session.**
+- Production build: blocked by Turbopack CSS worker port binding (`Operation not permitted`).
+- Chromium: launch denied by sandbox (`sandbox_host_linux.cc`, operation not permitted). No screenshot or browser-security acceptance result is claimed.
+- New sensitive routes/actions default closed through `LMS_SECURITY_VERIFIED=false`. Existing direct Supabase endpoints still require all migrations and their own authorization; this gate is not a replacement for RLS.
+
+## Seven P0 checks — source review, not deployment verification
+| Issue | Current source finding | Acceptance status |
+|---|---|---|
+| Student role escalation | Column grants, profile guard trigger, student-only auth-user trigger and admin RPC in existing remediation | Runtime re-test blocked |
+| Student paid self-enrollment | No client enrollment writes; approval/redemption/admin exception RPCs only | Runtime re-test blocked |
+| Public redeem-code listing | Admin-only metadata, hash column not granted, code row locking | Runtime/concurrency re-test blocked |
+| Permanent video URL leakage | Separate admin-only media table; guarded route, private-bucket signing and TTL capped by enrollment; added rejection of legacy URL strings in RPC | Unit boundary checks pass; DB/Storage tests blocked; provider unset |
+| Recursive admin RLS | SECURITY DEFINER private.is_admin queries profiles as owner | Runtime re-test blocked |
+| Google student profile creation | Trigger derives role as student, ignores role metadata | Real Google consent/callback credentials unverified |
+| Privileged SQL caller identity | Existing public privileged RPCs use auth.uid helpers; new session hardening extends them | Runtime re-test blocked |
+
+## Additional finding: direct Data API session bypass
+The previous `current_session_is_active()` check was only called by the application, and private.require_user/private.is_admin did not require a live session. A revoked JWT could therefore continue invoking direct privileged RPCs until token expiry; orphaned device-session rows could also remain after sign-out.
+
+Prepared migration `20261111000004_session_and_private_media.sql`:
+- Requires a live auth session in private.require_user and private.is_admin.
+- Requires live session, matching user and registered device in playback/progress device check.
+- Adds restrictive live-session policies to private tables, without making catalog reads private.
+- Rejects new permanent video URLs and fails closed on legacy URL values. Existing rows are not destroyed.
+- Creates/locks down the private payment-receipts bucket, if Storage schema exists.
+- Audits redeem-code state changes without logging code hashes.
+- Adds pgTAP direct revoked-user/admin RPC tests; test helpers now mint real auth.sessions rows.
+
+**This migration is unexecuted and must be reviewed/tested before release.** No claim of closing the additional vulnerability on the VPS database is made.
+
+## New application controls
+- Admin layout/pages and every mutation independently require a verified server-side admin role. No role editor or client-controlled identity escalation was added.
+- Receipt upload requires same-origin POST, verified session, release gate, approved payment instructions, bounded request bytes, actual image decoding/re-encoding, and private-bucket validation. Server chooses owner-prefixed random keys; failed submission attempts remove their uploaded object. Only pending payment RPC is called.
+- Private receipt reads require owner or admin plus RLS and a bounded 60-second signature. No public receipt URLs are stored.
+- Playback checks RPC enrollment/device authorization and current enrollment expiry, rejects permanent URLs, uses an explicitly selected provider and returns no-store short-lived grants. Student page payloads contain metadata/progress, not media paths.
+- Input validation on admin/student actions, safe same-site CMS links, native confirmation dialog for device removal, cross-origin sign-out rejection, nosniff/referrer/frame headers and a limited frame/object/base CSP.
+
+## Remaining blockers / risk acceptance required
+1. Apply and exercise security migrations against isolated local/staging DB, then an explicitly approved target. Audit existing Storage policies; creating a private bucket alone does not remove pre-existing permissive policies.
+2. Real Google OAuth, live Storage upload/signature/expiry tests, full payment flow and browser tests remain unverified.
+3. Distributed throttling for redemption, receipt uploads, playback and auth, including direct RPC endpoints, is still required before enabling sensitive features. Device-removal throttling already exists.
+4. Signed media grants are bearer tokens valid until their short expiry. Device revocation stops new grants; it cannot retract already issued links instantly. Browser hardware binding is not possible.
+5. Current player requires authorization renewal at grant expiry; seamless/adaptive playback and subtitles depend on selected provider. Myanmar-network evaluation is outstanding.
+6. Full nonce-based script CSP, online dependency advisory review, production cookie/proxy configuration, receipt retention/orphan cleanup, operational monitoring and clean-install/build acceptance remain open.
+7. The first-admin bootstrap stays a trusted operational procedure. Do not enable arbitrary privilege changes from browser metadata.
+
+---
+
+# Historical audit (preserved for provenance; not current-run results)
+
 # Security Audit — AI Marketing LMS
 
 **Date:** 2026-11-11 · **Scope:** Supabase schema/RLS/functions, authentication, device API
