@@ -10,53 +10,39 @@ A production-ready Learning Management System built with Next.js, TypeScript, Ta
 - **Authentication**: Google OAuth via Supabase Auth
 - **Deployment**: Docker
 
+## Status
+
+Not production-ready. See [SECURITY_AUDIT.md](SECURITY_AUDIT.md) for verified status and open gaps.
+The homepage is a placeholder: it has **not** been built from the Figma Option 2 V3 design.
+
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 20+
-- npm or yarn
-- Supabase account
+- Node.js 22+ (`.nvmrc`)
+- Docker (for the local Supabase stack)
+- Supabase CLI
 
-### Environment Setup
-
-1. Copy the environment template:
+### Local setup
 
 ```bash
-cp .env.example .env.local
-```
-
-2. Configure your Supabase project:
-   - Create a project at https://app.supabase.com
-   - Get your project URL and anon key from Settings > API
-   - Update `.env.local` with your credentials
-
-3. Configure Google OAuth:
-   - Go to Supabase Dashboard > Authentication > Providers
-   - Enable Google provider
-   - Follow the setup instructions for Google Cloud Console
-   - Add authorized redirect URL: `https://your-project.supabase.co/auth/v1/callback`
-
-### Development
-
-```bash
-# Install dependencies
 npm install
-
-# Run database migrations
-npm run db:migrate
-
-# Start development server
+cp .env.example .env.local      # fill in values from `supabase status`
+supabase start -x vector,logflare,imgproxy,studio,mailpit,edge-runtime,realtime,storage-api,supavisor,postgres-meta
+supabase db reset               # applies all migrations to the LOCAL database
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Google sign-in needs credentials: see [SETUP_GOOGLE_OAUTH.md](SETUP_GOOGLE_OAUTH.md).
 
-### Build
+### Tests
 
 ```bash
-npm run build
-npm start
+npm run test:db           # pgTAP RLS/security tests + concurrency tests (local DB)
+npm run typecheck
+npm run lint
+npm test                  # unit tests
+npm run test:integration  # production build + auth/API tests against local Supabase
 ```
 
 ## Project Structure
@@ -101,15 +87,13 @@ ai-marketing-lms/
 
 ## Security
 
-- Server-side role-based authorization
-- Row Level Security (RLS) policies
-- Google OAuth only (no password authentication)
-- Device limit enforcement
-- Secure payment approval workflow
+See [SECURITY_AUDIT.md](SECURITY_AUDIT.md).
 
 ## Documentation
 
 - [Implementation Plan](IMPLEMENTATION_PLAN.md)
+- [Security Audit](SECURITY_AUDIT.md)
+- [Google OAuth Setup](SETUP_GOOGLE_OAUTH.md)
 - [Database Schema](supabase/README.md)
 
 ## License
