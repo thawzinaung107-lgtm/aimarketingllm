@@ -1,15 +1,16 @@
 'use client'
 
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId, useState, useRef } from 'react'
 
 /** Desktop: inline nav. ≤800px: "☰" toggles a drop-down panel (Option 2 V3). */
-export function MobileNavToggle({ children }: { children: React.ReactNode }) {
+export function MobileNavigation({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false)
   const id = useId()
+  const toggle = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     if (!open) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setOpen(false); toggle.current?.focus() } }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
   }, [open])
@@ -17,8 +18,9 @@ export function MobileNavToggle({ children }: { children: React.ReactNode }) {
   return (
     <>
       <button
+        ref={toggle}
         type="button"
-        className="ml-auto rounded-lg border border-[#ddd] bg-white px-[11px] py-[7px] min-[801px]:hidden"
+        className="ml-auto rounded-lg border border-[#ddd] bg-white px-[11px] py-[7px] min-[1101px]:hidden"
         aria-label={open ? 'Close menu' : 'Open menu'}
         aria-expanded={open}
         aria-controls={id}
@@ -31,8 +33,8 @@ export function MobileNavToggle({ children }: { children: React.ReactNode }) {
         aria-label="Main navigation"
         // Close the panel when any link inside it is followed.
         onClick={(e) => (e.target as HTMLElement).closest('a') && setOpen(false)}
-        className={`ml-auto items-center gap-[27px] min-[801px]:flex max-[800px]:absolute max-[800px]:top-[68px] max-[800px]:right-0 max-[800px]:left-0 max-[800px]:z-10 max-[800px]:flex-col max-[800px]:items-start max-[800px]:border-b max-[800px]:border-line max-[800px]:bg-white max-[800px]:p-5 max-[800px]:shadow-[0_15px_20px_#0001] ${
-          open ? 'max-[800px]:flex' : 'max-[800px]:hidden'
+        className={`ml-auto items-center gap-[27px] min-[1101px]:flex max-[1100px]:absolute max-[1100px]:top-[68px] max-[1100px]:right-0 max-[1100px]:left-0 max-[1100px]:z-10 max-[1100px]:flex-col max-[1100px]:items-start max-[1100px]:border-b max-[1100px]:border-line max-[1100px]:bg-white max-[1100px]:p-5 max-[1100px]:shadow-[0_15px_20px_#0001] ${
+          open ? 'max-[1100px]:flex' : 'max-[1100px]:hidden'
         }`}
       >
         {children}
@@ -40,3 +42,5 @@ export function MobileNavToggle({ children }: { children: React.ReactNode }) {
     </>
   )
 }
+
+export const MobileNavToggle = MobileNavigation

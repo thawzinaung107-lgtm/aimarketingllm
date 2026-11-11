@@ -8,7 +8,7 @@ export function HowLearningWorks({ headingLevel = 'h2' }: { headingLevel?: 'h1' 
       <Heading id="how-heading" className="mt-[7px] mb-2 text-[clamp(24px,3vw,34px)] leading-[1.22] font-bold tracking-[-1.1px]">
         A simple path to better skills.
       </Heading>
-      <p className="text-muted">Pay manually, receive approval and redeem your code to unlock your course.</p>
+      <p className="text-muted">Submit payment for review, or redeem a valid code to unlock your course.</p>
       <ol className="mt-4 grid list-none grid-cols-1 gap-3.5 p-0 min-[481px]:grid-cols-2 min-[801px]:grid-cols-4">
         {LEARNING_STEPS.map((s, i) => (
           <li key={s.title} className="rounded-[13px] border border-line p-[22px]">

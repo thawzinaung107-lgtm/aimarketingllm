@@ -16,8 +16,8 @@ export function SiteHeader({ user }: { user: CurrentUser | null }) {
     ...(user?.role === 'admin' ? [{ href: '/admin', label: 'Admin' }] : []),
   ]
   return (
-    <header className="wrap relative flex h-[69px] items-center gap-8 border-b border-line min-[801px]:h-[79px]">
-      <Link href="/" className="text-base font-extrabold tracking-[-.4px] whitespace-nowrap">
+    <header className="wrap relative flex h-[69px] items-center gap-8 border-b border-line min-[1101px]:h-[79px]">
+      <Link href="/" className="text-[13px] min-[481px]:text-base font-extrabold tracking-[-.4px] whitespace-nowrap">
         <b aria-hidden="true" className="mr-[9px] inline-grid size-[27px] place-items-center rounded-md bg-black text-[15px] text-white">
           ■
         </b>
@@ -30,7 +30,7 @@ export function SiteHeader({ user }: { user: CurrentUser | null }) {
           </Link>
         ))}
         {user ? (
-          <Link href="/profile" className="btn btn-alt">
+          <Link href="/profile" className="btn btn-alt max-w-[150px] overflow-hidden text-ellipsis">
             {user.fullName || 'Account'}
           </Link>
         ) : (

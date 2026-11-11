@@ -48,3 +48,7 @@ next-env.d.ts
 *.swp
 *.swo
 *~
+
+# Browser reports may contain authenticated screenshots/traces.
+/playwright-report/
+/test-results/

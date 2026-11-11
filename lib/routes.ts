@@ -1,5 +1,5 @@
 /** Paths that require a signed-in user (optimistic proxy check only). */
-const PROTECTED_PREFIXES = ['/my-courses', '/profile', '/admin', '/learn'] as const
+const PROTECTED_PREFIXES = ['/my-courses', '/profile', '/admin', '/learn', '/checkout', '/payments', '/redeem'] as const
 
 export function isProtectedPath(pathname: string): boolean {
   return PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`))

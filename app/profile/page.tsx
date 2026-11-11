@@ -1,45 +1,10 @@
-import { SiteHeader, SiteFooter, SignOutButton } from '@/components/site-chrome'
-import { DeviceList } from '@/components/device-list'
+import Link from 'next/link'
+import { StudentShell } from '@/components/student-shell'
+import { SignOutButton } from '@/components/site-chrome'
+import { ActionForm } from '@/components/action-form'
+import { profileAction } from '@/app/student-actions'
 import { requireUser } from '@/lib/auth'
-import { getMyDevices } from '@/lib/db-helpers'
-
 export default async function ProfilePage() {
   const user = await requireUser('/profile')
-  const devices = await getMyDevices(user.id)
-
-  return (
-    <>
-      <SiteHeader user={user} />
-      <main className="wrap min-h-[70vh] max-w-[820px] pt-[35px] pb-[72px]">
-        <h1 className="mb-8 text-[clamp(31px,4vw,49px)] leading-[1.13] font-bold tracking-[-1.8px]">Profile</h1>
-
-        <section className="mb-6 rounded-[15px] border border-line p-7">
-          <h2 className="mb-4 text-lg font-bold tracking-[-.4px]">Account</h2>
-          <dl className="space-y-4">
-            <div>
-              <dt className="text-sm font-medium text-muted">Name</dt>
-              <dd className="mt-1">{user.fullName || 'Not set'}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-muted">Email</dt>
-              <dd className="mt-1">{user.email ?? 'Not available'}</dd>
-            </div>
-          </dl>
-        </section>
-
-        <section className="mb-6 rounded-[15px] border border-line p-7">
-          <h2 className="mb-2 text-lg font-bold tracking-[-.4px]">Devices</h2>
-          <p className="mb-4 text-sm text-muted">
-            Your account can be used on up to two devices. Removing a device signs it out.
-          </p>
-          <DeviceList devices={devices} />
-        </section>
-
-        <div className="flex justify-end">
-          <SignOutButton />
-        </div>
-      </main>
-      <SiteFooter />
-    </>
-  )
+  return <StudentShell title="Your profile" path="/profile"><div className="panel mb-6"><p className="mb-5 break-all text-muted">{user.email}</p><ActionForm action={profileAction}><label className="block text-xs font-semibold">Full name<input className="field" name="full_name" defaultValue={user.fullName ?? ''} required maxLength={200} autoComplete="name" /></label></ActionForm></div><div className="flex flex-wrap gap-3"><Link href="/profile/devices" className="btn btn-alt">Manage devices</Link><SignOutButton /></div></StudentShell>
 }

@@ -18,7 +18,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${inter.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-white font-sans text-ink">{children}</body>
+      <body className="flex min-h-full flex-col bg-white font-sans text-ink"><a href="#main-content" className="sr-only focus:not-sr-only focus:p-3">Skip to content</a><div id="main-content" className="contents">{children}</div></body>
     </html>
   );
 }

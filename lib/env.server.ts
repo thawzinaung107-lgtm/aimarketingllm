@@ -8,7 +8,7 @@ import { z } from 'zod'
 const serverSchema = z.object({
   SUPABASE_SECRET_KEY: z.string().min(20),
   LESSON_VIDEO_BUCKET: z.string().min(1).default('lesson-videos'),
-  SIGNED_URL_TTL_SECONDS: z.coerce.number().int().min(30).max(3600).default(300),
+  SIGNED_URL_TTL_SECONDS: z.coerce.number().int().min(30).max(300).default(120),
 })
 
 export function getServerEnv() {

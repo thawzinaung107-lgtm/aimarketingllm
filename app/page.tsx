@@ -4,7 +4,7 @@ import { PromotionalCarousel, type PromoSlide } from '@/components/promotional-c
 import { SiteFooter, SiteHeader } from '@/components/site-chrome'
 import { getCurrentUser } from '@/lib/auth'
 import { getActiveHomepageBanners, getPublishedCourses } from '@/lib/db-helpers'
-import { DEFAULT_PROMO_SLIDES } from '@/lib/promotions'
+import { homepageSlides } from '@/lib/promotions'
 import { HowLearningWorks } from '@/components/how-learning-works'
 
 /**
@@ -14,7 +14,7 @@ import { HowLearningWorks } from '@/components/how-learning-works'
  */
 export default async function Home() {
   const [user, banners, courses] = await Promise.all([getCurrentUser(), getActiveHomepageBanners(), getPublishedCourses()])
-  const slides: PromoSlide[] = banners.length > 0 ? banners : DEFAULT_PROMO_SLIDES
+  const slides: PromoSlide[] = homepageSlides(banners)
 
   return (
     <>

@@ -1,0 +1,14 @@
+[
+  {
+    "file": "reference-1.webp",
+    "originalSha256": "7d60c174d88973b07b5ca8de8fc75c8dc038146f2d6b91dcaa4a5ad17383947e",
+    "originalBytes": 83507,
+    "optimizedBytes": 62914
+  },
+  {
+    "file": "reference-2.webp",
+    "originalSha256": "7aa571149fb2f51c158260251ef545c18caac203f10fea71e00c60700e51d05c",
+    "originalBytes": 96965,
+    "optimizedBytes": 73108
+  }
+]

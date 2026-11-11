@@ -13,7 +13,9 @@
     "test:db": "scripts/test-db.sh && scripts/test-db-concurrency.sh",
     "test:all": "npm run test:db && npm run test && npm run test:integration",
     "db:reset": "supabase db reset",
-    "db:types": "supabase gen types typescript --local > lib/database.types.ts"
+    "db:types": "supabase gen types typescript --local > lib/database.types.ts",
+    "test:e2e": "scripts/test-e2e.sh",
+    "design:extract": "node scripts/extract-design-images.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -26,7 +28,8 @@
     "react-dom": "19.3.0",
     "server-only": "^0.0.1",
     "tailwind-merge": "^3.7.0",
-    "zod": "^4.6.7"
+    "zod": "^4.6.7",
+    "sharp": "0.35.5"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "4.3.3",

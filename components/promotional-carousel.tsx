@@ -49,6 +49,7 @@ export function PromotionalCarousel({ slides }: { slides: PromoSlide[] }) {
 
   useEffect(() => {
     const onVis = () => setTabHidden(document.hidden)
+    onVis()
     document.addEventListener('visibilitychange', onVis)
     return () => document.removeEventListener('visibilitychange', onVis)
   }, [])
@@ -60,7 +61,7 @@ export function PromotionalCarousel({ slides }: { slides: PromoSlide[] }) {
   }, [running, index, go])
 
   if (count === 0) return null
-  const slide = slides[index]
+  const slide = slides[index % count]
   const pad = (n: number) => String(n).padStart(2, '0')
 
   function togglePlay() {
@@ -68,7 +69,12 @@ export function PromotionalCarousel({ slides }: { slides: PromoSlide[] }) {
   }
 
   return (
-    <section aria-roledescription="carousel" aria-label="Promotions">
+    <section aria-roledescription="carousel" aria-label="Promotions"
+      onFocus={() => setFocused(true)}
+      onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocused(false) }}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); go(index + (e.key === 'ArrowLeft' ? -1 : 1)) }
+      }}>
       <div
         className="grid min-h-[385px] overflow-hidden rounded-[18px] bg-hero text-white max-[800px]:grid-cols-1 min-[801px]:grid-cols-[1fr_47%]"
         onMouseEnter={() => setHovered(true)}

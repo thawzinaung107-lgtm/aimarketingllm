@@ -13,5 +13,6 @@ export function formatPrice(amount: number | null | undefined, currency: string 
 }
 
 export function isExpired(expiresAt: string | null | undefined, now: Date = new Date()): boolean {
-  return !expiresAt || new Date(expiresAt).getTime() <= now.getTime()
+  const expiry = expiresAt ? Date.parse(expiresAt) : NaN
+  return !Number.isFinite(expiry) || expiry <= now.getTime()
 }

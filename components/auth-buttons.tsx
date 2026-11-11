@@ -11,11 +11,16 @@ export function GoogleSignInButton({ next }: { next: string }) {
   const handleLogin = async () => {
     setIsLoading(true)
     setError(null)
+    try {
     const supabase = createClient()
     const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
     const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } })
     if (error) {
       setError('Could not start Google sign-in. Please try again.')
+      setIsLoading(false)
+    }
+    } catch {
+      setError('Could not connect to Google sign-in. Check your connection and try again.')
       setIsLoading(false)
     }
   }

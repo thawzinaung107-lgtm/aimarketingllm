@@ -110,3 +110,16 @@ body {
     }
   }
 }
+
+@layer components {
+  .wrap { width: 100%; }
+  .panel { border: 1px solid var(--color-line); border-radius: 15px; padding: 28px; background: white; min-width: 0; }
+  .field { display: block; width: 100%; min-width: 0; border: 1px solid #d9dce0; border-radius: 9px; padding: 12px 13px; margin: 7px 0 17px; background: white; }
+  .page-title { font-size: clamp(31px,4vw,49px); line-height: 1.13; letter-spacing: -1.8px; font-weight: 700; margin: 8px 0 24px; overflow-wrap: anywhere; }
+  .two-col { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 22px; }
+  .dashboard { display: grid; grid-template-columns: 230px minmax(0,1fr); gap: 23px; }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .data-table th, .data-table td { text-align: left; padding: 13px 9px; border-bottom: 1px solid var(--color-line); overflow-wrap: anywhere; }
+  .data-table th { color: var(--color-muted); font-weight: 650; }
+  @media (max-width: 800px) { .two-col, .dashboard { grid-template-columns: minmax(0,1fr); } }
+}

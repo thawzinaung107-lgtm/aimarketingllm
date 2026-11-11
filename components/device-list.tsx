@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
+import { ConfirmationDialog } from '@/components/confirmation-dialog'
 
 interface Device {
   id: string
@@ -16,10 +17,10 @@ export function DeviceList({ devices }: { devices: Device[] }) {
   const [, startTransition] = useTransition()
 
   async function remove(id: string) {
-    if (!window.confirm('Remove this device? It will be signed out.')) return
     setError(null)
     setPendingId(id)
-    const res = await fetch(`/api/devices/${id}`, { method: 'DELETE' })
+    let res: Response
+    try { res = await fetch(`/api/devices/${id}`, { method: 'DELETE' }) } catch { setPendingId(null); setError('Network error. Please try again.'); return }
     setPendingId(null)
     if (!res.ok) {
       const body = (await res.json().catch(() => null)) as { error?: string } | null
@@ -40,14 +41,7 @@ export function DeviceList({ devices }: { devices: Device[] }) {
             <p className="font-medium">{d.device_name || 'Unknown device'}</p>
             <p className="text-sm text-muted">Last used {new Date(d.last_used_at).toLocaleString('en')}</p>
           </div>
-          <button
-            type="button"
-            onClick={() => remove(d.id)}
-            disabled={pendingId === d.id}
-            className="text-sm font-medium text-red-700 hover:text-red-900 disabled:opacity-50"
-          >
-            {pendingId === d.id ? 'Removing…' : 'Remove'}
-          </button>
+          <ConfirmationDialog label={pendingId === d.id ? 'Removing…' : 'Remove'} message="Remove this device? It will be signed out." disabled={pendingId !== null} onConfirm={() => { void remove(d.id) }} />
         </div>
       ))}
     </div>
