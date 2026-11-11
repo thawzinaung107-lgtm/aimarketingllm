@@ -1,3 +1,11 @@
+> **Outdated — describes the original schema.** The security remediation
+> (`migrations/20261111000001_security_remediation.sql`) changed it substantially:
+> redeem codes are hashed (no `code` column), lesson video paths moved to the
+> admin-only `lesson_media` table (no `lessons.video_url`), `user_sessions` was
+> rebuilt, `device_events` was added, all policies were replaced, and access-granting
+> writes go through SECURITY DEFINER functions only. See `SECURITY_AUDIT.md` and the
+> migration files as the source of truth until this document is rewritten.
+
 # Database Schema Documentation
 
 ## Overview

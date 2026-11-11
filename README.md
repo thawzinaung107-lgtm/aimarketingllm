@@ -64,7 +64,7 @@ ai-marketing-lms/
 └── public/               # Static assets
 ```
 
-## Features
+## Planned Features (most not built yet — see SECURITY_AUDIT.md for what exists)
 
 ### Student Features
 - Browse courses and view details
