@@ -2,10 +2,9 @@
  * Integration test helpers. LOCAL Supabase only: the URL is asserted to be
  * loopback so these tests can never run against a hosted project.
  *
- * Real Google OAuth cannot be automated. Sessions are minted with GoTrue's
- * admin API (generateLink + verifyOtp), which produces the same kind of
- * session and cookie the OAuth callback produces. The user is created with
- * app_metadata.provider = 'google' to mirror a Google sign-in.
+ * Sessions are minted with GoTrue's admin API (generateLink + verifyOtp),
+ * which produces the same kind of session and cookie the sign-in flow
+ * produces. The user is created with email/password auth.
  */
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { createServerClient } from '@supabase/ssr'
@@ -37,14 +36,14 @@ export interface TestUser {
 const RUN = Date.now().toString(36)
 let n = 0
 
-export async function createGoogleUser(meta: Record<string, unknown> = {}): Promise<{ id: string; email: string }> {
+export async function createTestUser(meta: Record<string, unknown> = {}): Promise<{ id: string; email: string }> {
   const admin = serviceClient()
   const email = `it-${RUN}-${++n}@example.com`
   const { data, error } = await admin.auth.admin.createUser({
     email,
     email_confirm: true,
+    password: `pw-${RUN}-${n}`,
     user_metadata: meta,
-    app_metadata: { provider: 'google', providers: ['google'] },
   })
   if (error) throw error
   return { id: data.user.id, email }
@@ -86,12 +85,12 @@ export async function signIn(user: { id: string; email: string }): Promise<TestU
 }
 
 export async function newStudent(meta: Record<string, unknown> = {}): Promise<TestUser> {
-  return signIn(await createGoogleUser(meta))
+  return signIn(await createTestUser(meta))
 }
 
 /** Promote via the trusted server side (service role), then sign in fresh. */
 export async function newAdmin(): Promise<TestUser> {
-  const u = await createGoogleUser()
+  const u = await createTestUser()
   const { error } = await serviceClient().from('profiles').update({ role: 'admin' }).eq('id', u.id)
   if (error) throw error
   return signIn(u)

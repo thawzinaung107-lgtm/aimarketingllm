@@ -1,17 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import {
-  createCourse, createGoogleUser, endSession, http, newAdmin, newStudent, registerDeviceViaApp, serviceClient, signIn,
+  createCourse, createTestUser, endSession, http, newAdmin, newStudent, registerDeviceViaApp, serviceClient, signIn,
 } from './helpers'
 
 describe('profile creation (V6)', () => {
-  it('first Google sign-in creates exactly one student profile, ignoring role in metadata', async () => {
-    const u = await createGoogleUser({ full_name: 'First Login', role: 'admin' })
+  it('first sign-in creates exactly one student profile, ignoring role in metadata', async () => {
+    const u = await createTestUser({ full_name: 'First Login', role: 'admin' })
     const { data } = await serviceClient().from('profiles').select('role, full_name').eq('id', u.id)
     expect(data).toEqual([{ role: 'student', full_name: 'First Login' }])
   })
 
   it('returning sign-in keeps the same single profile', async () => {
-    const u = await createGoogleUser({ full_name: 'Returner' })
+    const u = await createTestUser({ full_name: 'Returner' })
     await signIn(u)
     await signIn(u)
     const { data } = await serviceClient().from('profiles').select('id').eq('id', u.id)
@@ -98,7 +98,7 @@ describe('session handling and route protection', () => {
 
 describe('device registration and removal API', () => {
   it('first two devices register; a third is sent to the device-limit page', async () => {
-    const u = await createGoogleUser()
+    const u = await createTestUser()
     const d1 = await registerDeviceViaApp(await signIn(u))
     expect(d1.location).toContain('/my-courses')
     const d2 = await registerDeviceViaApp(await signIn(u))
@@ -111,7 +111,7 @@ describe('device registration and removal API', () => {
   })
 
   it('the same device (same cookie) does not consume a second slot', async () => {
-    const u = await createGoogleUser()
+    const u = await createTestUser()
     const first = await registerDeviceViaApp(await signIn(u))
     await registerDeviceViaApp(await signIn(u), first.deviceKey)
     const { count } = await serviceClient().from('registered_devices').select('*', { count: 'exact', head: true }).eq('user_id', u.id)
@@ -119,7 +119,7 @@ describe('device registration and removal API', () => {
   })
 
   it('removal requires auth, checks ownership, revokes sessions, and is rate limited', async () => {
-    const ownerUser = await createGoogleUser()
+    const ownerUser = await createTestUser()
     const owner = await signIn(ownerUser)
     await registerDeviceViaApp(owner)
     const { data: devs } = await serviceClient().from('registered_devices').select('id').eq('user_id', owner.id)
@@ -187,7 +187,7 @@ describe('data API enforcement with real tokens (PostgREST)', () => {
   })
 
   it('admin can approve a student payment and the student then gets playback on a registered device', async () => {
-    const studentUser = await createGoogleUser()
+    const studentUser = await createTestUser()
     const s = await signIn(studentUser)
     await registerDeviceViaApp(s)
     const a = await newAdmin()

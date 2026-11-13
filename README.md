@@ -7,7 +7,7 @@ A production-ready Learning Management System built with Next.js, TypeScript, Ta
 - **Frontend**: Next.js 16, TypeScript, Tailwind CSS 4, shadcn/ui
 - **Backend**: Next.js API Routes, Server Actions
 - **Database**: Supabase PostgreSQL
-- **Authentication**: Google OAuth via Supabase Auth
+- **Authentication**: Email/password via Supabase Auth
 - **Deployment**: Docker
 
 ## Status

@@ -8,7 +8,7 @@ const PUBLIC_LINKS = [
   { href: '/how-it-works', label: 'How it works' },
 ]
 
-/** Option 2 V3 header: brand mark + text nav + dark Google sign-in button. */
+/** Option 2 V3 header: brand mark + text nav + sign-in button. */
 export function SiteHeader({ user }: { user: CurrentUser | null }) {
   const links = [
     ...PUBLIC_LINKS,
@@ -35,7 +35,7 @@ export function SiteHeader({ user }: { user: CurrentUser | null }) {
           </Link>
         ) : (
           <Link href="/login" className="btn">
-            Google sign in
+            Sign in
           </Link>
         )}
       </MobileNavToggle>

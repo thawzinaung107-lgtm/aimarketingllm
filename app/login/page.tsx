@@ -1,11 +1,11 @@
 import { redirect } from 'next/navigation'
-import { GoogleSignInButton } from '@/components/auth-buttons'
+import { EmailSignInForm } from '@/components/auth-buttons'
 import { SiteFooter, SiteHeader } from '@/components/site-chrome'
 import { getCurrentUser } from '@/lib/auth'
 import { safeNextPath } from '@/lib/routes'
 
 const ERRORS: Record<string, string> = {
-  provider: 'Google sign-in was cancelled or failed.',
+  provider: 'Sign-in was cancelled or failed.',
   missing_code: 'The sign-in link was incomplete. Please try again.',
   exchange_failed: 'Your sign-in could not be completed. Please try again.',
   device: 'We could not register this device. Please try again.',
@@ -31,10 +31,9 @@ export default async function LoginPage(props: PageProps<'/login'>) {
             </p>
           )}
           <div className="rounded-[15px] border border-line bg-white p-7">
-            <h2 className="text-lg font-bold tracking-[-.4px]">Sign in with Google</h2>
-            <p className="text-muted">Use your Google account to access your courses and learning progress.</p>
-            <GoogleSignInButton next={next} />
-            <p className="mt-[18px] mb-0 text-xs text-muted">No password sign-in is available for this academy.</p>
+            <h2 className="text-lg font-bold tracking-[-.4px]">Sign in with email</h2>
+            <p className="text-muted">Use your email and password to access your courses and learning progress.</p>
+            <EmailSignInForm next={next} />
           </div>
         </div>
       </main>
