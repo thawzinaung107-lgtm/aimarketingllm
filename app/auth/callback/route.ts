@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { safeNextPath } from '@/lib/routes'
 
 /**
- * Google OAuth (PKCE) callback. Exchanges the code for a session cookie.
+ * Email confirmation (PKCE) callback. Exchanges the code for a session cookie.
  * Profiles are created by the database trigger on auth.users (always with the
  * 'student' role), so this route never writes to profiles.
  */

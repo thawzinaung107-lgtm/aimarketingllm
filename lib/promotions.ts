@@ -34,7 +34,7 @@ export const DEFAULT_PROMO_SLIDES: PromoSlide[] = [
 
 /** Steps shown in "How learning works" (Option 2 V3 copy). */
 export const LEARNING_STEPS: { title: string; body: string }[] = [
-  { title: 'Sign in with Google', body: 'Use your Google account to enter the academy.' },
+  { title: 'Sign in with email', body: 'Use your email and password to enter the academy.' },
   { title: 'Complete manual payment', body: 'Follow the official payment instructions.' },
   { title: 'Activate your access', body: 'Access opens after payment approval, or by redeeming a valid course code.' },
   { title: 'Learn at your pace', body: 'Track your progress and resume where you left off.' },

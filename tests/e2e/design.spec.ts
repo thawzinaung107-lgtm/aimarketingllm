@@ -84,10 +84,10 @@ test('reduced motion starts paused and hidden documents do not advance',async({p
   await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'))})
   await page.clock.fastForward(12000);await expect(page.getByRole('heading',{name:'QA Promotion 1'})).toBeVisible()
 })
-test('signed-out protected routes go to real Google sign-in, not fake dashboards',async({page})=>{
+test('signed-out protected routes go to the sign-in page, not fake dashboards',async({page})=>{
   for(const route of ['/my-courses','/payments','/redeem','/profile/devices','/admin/payments']){
     await page.goto(route);await expect(page).toHaveURL(/\/login\?/)
-    await expect(page.getByRole('button',{name:'Continue with Google'})).toBeVisible()
+    await expect(page.getByRole('button',{name:'Sign in'})).toBeVisible()
   }
 })
 
